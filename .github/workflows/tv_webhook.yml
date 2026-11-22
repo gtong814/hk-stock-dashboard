@@ -1,0 +1,33 @@
+name: Sync TradingView Signal
+
+on:
+  repository_dispatch:
+    types: [tv-signal]
+
+permissions:
+  contents: write
+
+jobs:
+  sync-signal:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Update data.json with TV signal
+        env:
+          TV_PAYLOAD: ${{ toJson(github.event.client_payload) }}
+        run: python update_signal.py
+
+      - name: Commit and push
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add data.json
+          git diff --staged --quiet || git commit -m "Sync TradingView signal"
+          git push
