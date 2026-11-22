@@ -1,15 +1,17 @@
 {
-  "updated_at": "2026-11-22 15:00:42 HKT",
+  "updated_at": "2026-11-22 16:42:46 HKT",
+  "total": 14,
   "stocks": [
     {
-      "symbol": "0700.HK",
-      "name": "騰訊控股",
-      "price": 344.0,
-      "change_pct": -1.26,
-      "ma5": 366.32,
-      "ma60": 415.96,
-      "diff": -49.64,
-      "signal": "空頭排列",
+      "symbol": "1810.HK",
+      "name": "小米集團-W",
+      "price": 27.64,
+      "change_pct": -3.09,
+      "ma5": 28.92,
+      "ma60": 27.06,
+      "diff": 1.86,
+      "signal": "多頭排列",
+      "priority": 3,
       "date": "2026-11-20"
     },
     {
@@ -21,50 +23,19 @@
       "ma60": 103.84,
       "diff": -18.89,
       "signal": "空頭排列",
+      "priority": 4,
       "date": "2026-11-20"
     },
     {
-      "symbol": "3690.HK",
-      "name": "美團-W",
-      "price": 66.5,
-      "change_pct": -1.55,
-      "ma5": 69.25,
-      "ma60": 73.78,
-      "diff": -4.53,
+      "symbol": "0700.HK",
+      "name": "騰訊控股",
+      "price": 344.0,
+      "change_pct": -1.26,
+      "ma5": 366.32,
+      "ma60": 415.96,
+      "diff": -49.64,
       "signal": "空頭排列",
-      "date": "2026-11-20"
-    },
-    {
-      "symbol": "1810.HK",
-      "name": "小米集團-W",
-      "price": 27.64,
-      "change_pct": -3.09,
-      "ma5": 28.92,
-      "ma60": 27.06,
-      "diff": 1.86,
-      "signal": "多頭排列",
-      "date": "2026-11-20"
-    },
-    {
-      "symbol": "0941.HK",
-      "name": "中國移動",
-      "price": 80.05,
-      "change_pct": -0.81,
-      "ma5": 80.46,
-      "ma60": 79.53,
-      "diff": 0.93,
-      "signal": "多頭排列",
-      "date": "2026-11-20"
-    },
-    {
-      "symbol": "0883.HK",
-      "name": "中國海洋石油",
-      "price": 21.7,
-      "change_pct": -1.9,
-      "ma5": 22.37,
-      "ma60": 23.94,
-      "diff": -1.57,
-      "signal": "空頭排列",
+      "priority": 4,
       "date": "2026-11-20"
     },
     {
@@ -76,17 +47,31 @@
       "ma60": 75.52,
       "diff": -11.75,
       "signal": "空頭排列",
+      "priority": 4,
       "date": "2026-11-20"
     },
     {
-      "symbol": "0388.HK",
-      "name": "香港交易所",
-      "price": 357.0,
-      "change_pct": -3.72,
-      "ma5": 371.88,
-      "ma60": 385.51,
-      "diff": -13.63,
+      "symbol": "3690.HK",
+      "name": "美團-W",
+      "price": 66.5,
+      "change_pct": -1.55,
+      "ma5": 69.25,
+      "ma60": 73.78,
+      "diff": -4.53,
       "signal": "空頭排列",
+      "priority": 4,
+      "date": "2026-11-20"
+    },
+    {
+      "symbol": "0883.HK",
+      "name": "中國海洋石油",
+      "price": 21.7,
+      "change_pct": -1.9,
+      "ma5": 22.37,
+      "ma60": 23.94,
+      "diff": -1.57,
+      "signal": "空頭排列",
+      "priority": 4,
       "date": "2026-11-20"
     },
     {
@@ -98,6 +83,19 @@
       "ma60": 56.45,
       "diff": -7.63,
       "signal": "空頭排列",
+      "priority": 4,
+      "date": "2026-11-20"
+    },
+    {
+      "symbol": "0020.HK",
+      "name": "商湯-W",
+      "price": 1.02,
+      "change_pct": -2.86,
+      "ma5": 1.06,
+      "ma60": 1.21,
+      "diff": -0.16,
+      "signal": "空頭排列",
+      "priority": 4,
       "date": "2026-11-20"
     },
     {
@@ -109,6 +107,67 @@
       "ma60": 149.99,
       "diff": -14.49,
       "signal": "空頭排列",
+      "priority": 4,
+      "date": "2026-11-20"
+    },
+    {
+      "symbol": "0388.HK",
+      "name": "香港交易所",
+      "price": 357.0,
+      "change_pct": -3.72,
+      "ma5": 371.88,
+      "ma60": 385.51,
+      "diff": -13.63,
+      "signal": "空頭排列",
+      "priority": 4,
+      "date": "2026-11-20"
+    },
+    {
+      "symbol": "9660.HK",
+      "name": "地平線機器人-W",
+      "price": 3.12,
+      "change_pct": -7.96,
+      "ma5": 3.46,
+      "ma60": 3.98,
+      "diff": -0.52,
+      "signal": "空頭排列",
+      "priority": 4,
+      "date": "2026-11-20"
+    },
+    {
+      "symbol": "0522.HK",
+      "name": "ASMPT",
+      "price": 81.85,
+      "change_pct": -8.03,
+      "ma5": 89.17,
+      "ma60": 139.78,
+      "diff": -50.61,
+      "signal": "空頭排列",
+      "priority": 4,
+      "date": "2026-11-20"
+    },
+    {
+      "symbol": "9698.HK",
+      "name": "萬國數據-SW",
+      "price": 13.9,
+      "change_pct": -8.13,
+      "ma5": 16.15,
+      "ma60": 26.64,
+      "diff": -10.49,
+      "signal": "空頭排列",
+      "priority": 4,
+      "date": "2026-11-20"
+    },
+    {
+      "symbol": "9880.HK",
+      "name": "優必選",
+      "price": 57.9,
+      "change_pct": -13.32,
+      "ma5": 65.94,
+      "ma60": 73.09,
+      "diff": -7.15,
+      "signal": "空頭排列",
+      "priority": 4,
       "date": "2026-11-20"
     }
   ]
