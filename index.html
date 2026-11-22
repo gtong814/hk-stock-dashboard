@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>港股通 Dashboard (MA5/MA60)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen p-4 md:p-8">
+  <div class="max-w-5xl mx-auto">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-2">
+      <div>
+        <h1 class="text-2xl font-bold text-white">港股通監控 Dashboard</h1>
+        <p class="text-sm text-slate-400">每日 16:30 HKT 自動更新・MA5 / MA60 週期震盪訊號</p>
+      </div>
+      <div id="updatedAt" class="text-sm bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-700 text-slate-300">
+        載入中...
+      </div>
+    </div>
+
+    <!-- 搜尋與篩選 -->
+    <div class="flex flex-col sm:flex-row gap-3 mb-4">
+      <input id="searchInput" type="text" placeholder="搜尋代號或名稱（例如 0700、騰訊）..."
+        class="flex-1 bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-blue-500" />
+      <select id="signalFilter" class="bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-sm">
+        <option value="ALL">全部狀態</option>
+        <option value="BULL">多頭 / 買進</option>
+        <option value="BEAR">空頭 / 賣出</option>
+      </select>
+    </div>
+
+    <!-- 數據表格 -->
+    <div class="overflow-x-auto bg-slate-800 rounded-xl border border-slate-700 shadow-lg">
+      <table class="w-full text-left border-collapse">
+        <thead>
+          <tr class="border-b border-slate-700 text-slate-400 text-xs uppercase">
+            <th class="p-4">股票</th>
+            <th class="p-4 text-right">收市價 (HKD)</th>
+            <th class="p-4 text-right">漲跌幅</th>
+            <th class="p-4 text-right">MA5</th>
+            <th class="p-4 text-right">MA60</th>
+            <th class="p-4 text-right">MA差值</th>
+            <th class="p-4 text-center">訊號狀態</th>
+          </tr>
+        </thead>
+        <tbody id="stockTable" class="divide-y divide-slate-700/60 text-sm">
+          <tr><td colspan="7" class="p-6 text-center text-slate-400">資料讀取中...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    let allStocks = [];
+
+    function renderTable() {
+      const keyword = document.getElementById("searchInput").value.trim().toLowerCase();
+      const filter = document.getElementById("signalFilter").value;
+      const tbody = document.getElementById("stockTable");
+
+      const filtered = allStocks.filter(s => {
+        const matchText = s.symbol.toLowerCase().includes(keyword) || s.name.toLowerCase().includes(keyword);
+        const isBull = s.diff >= 0;
+        const matchFilter = filter === "ALL" || (filter === "BULL" && isBull) || (filter === "BEAR" && !isBull);
+        return matchText && matchFilter;
+      });
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-slate-400">沒有符合條件的股票</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = filtered.map(s => {
+        const pctColor = s.change_pct > 0 ? "text-red-400" : s.change_pct < 0 ? "text-emerald-400" : "text-slate-300";
+        const pctSign = s.change_pct > 0 ? "+" : "";
+        const diffColor = s.diff >= 0 ? "text-red-400" : "text-emerald-400";
+        const badgeStyle = s.signal.includes("買")
+          ? "bg-red-500/20 text-red-300 border border-red-500/50 font-bold"
+          : s.signal.includes("賣")
+          ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/50 font-bold"
+          : s.diff >= 0
+          ? "bg-red-900/30 text-red-300"
+          : "bg-emerald-900/30 text-emerald-300";
+
+        return `
+          <tr class="hover:bg-slate-700/40 transition">
+            <td class="p-4">
+              <div class="font-semibold text-white">${s.name}</div>
+              <div class="text-xs text-slate-400">${s.symbol}</div>
+            </td>
+            <td class="p-4 text-right font-mono">${s.price.toFixed(2)}</td>
+            <td class="p-4 text-right font-mono ${pctColor}">${pctSign}${s.change_pct.toFixed(2)}%</td>
+            <td class="p-4 text-right font-mono text-slate-300">${s.ma5.toFixed(2)}</td>
+            <td class="p-4 text-right font-mono text-slate-300">${s.ma60.toFixed(2)}</td>
+            <td class="p-4 text-right font-mono ${diffColor}">${s.diff > 0 ? "+" : ""}${s.diff.toFixed(2)}</td>
+            <td class="p-4 text-center">
+              <span class="px-2.5 py-1 rounded-full text-xs ${badgeStyle}">${s.signal}</span>
+            </td>
+          </tr>
+        `;
+      }).join("");
+    }
+
+    async function loadData() {
+      try {
+        const res = await fetch(`./data.json?t=${Date.now()}`);
+        const data = await res.json();
+        document.getElementById("updatedAt").textContent = `最後更新：${data.updated_at}`;
+        allStocks = data.stocks || [];
+        renderTable();
+      } catch (err) {
+        document.getElementById("stockTable").innerHTML =
+          `<tr><td colspan="7" class="p-6 text-center text-amber-400">尚未產生 data.json，請先到 GitHub Actions 手動執行一次 Workflow。</td></tr>`;
+      }
+    }
+
+    document.getElementById("searchInput").addEventListener("input", renderTable);
+    document.getElementById("signalFilter").addEventListener("change", renderTable);
+    loadData();
+  </script>
+</body>
+</html>
