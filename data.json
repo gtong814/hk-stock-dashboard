@@ -1,7 +1,19 @@
 {
-  "updated_at": "2026-11-22 16:42:46 HKT",
-  "total": 14,
+  "updated_at": "2026-11-22 16:50:09 HKT",
+  "total": 15,
   "stocks": [
+    {
+      "symbol": "0941.HK",
+      "name": "中國移動",
+      "price": 80.05,
+      "change_pct": -0.81,
+      "ma5": 80.46,
+      "ma60": 79.53,
+      "diff": 0.93,
+      "signal": "多頭排列",
+      "priority": 3,
+      "date": "2026-11-20"
+    },
     {
       "symbol": "1810.HK",
       "name": "小米集團-W",
