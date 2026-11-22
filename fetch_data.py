@@ -22,7 +22,7 @@ def fetch_all():
         try:
             ticker = yf.Ticker(symbol)
             # 抓取過去 6 個月日線數據以確保足夠計算 MA60
-            df = ticker.history(period="6mo")
+            df = ticker.history(period="6mo", auto_adjust=False)
             if len(df) < 61:
                 continue
 
