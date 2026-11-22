@@ -1,35 +1,53 @@
 import json
+import re
 import time
 from datetime import datetime, timezone, timedelta
-import akshare as ak
+import requests
+from bs4 import BeautifulSoup
 import yfinance as yf
 import pandas as pd
 
 def get_hk_connect_stocks():
-    """自動抓取最新港股通成分股名單"""
+    """直接從港交所披露易 (HKEXnews) 抓取最新港股通完整名單（繁體中文）"""
+    url = "https://www3.hkexnews.hk/sdw/search/mutualmarket_c.aspx?t=hk"
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+    }
     try:
-        df = ak.stock_hk_ggt_components_em()
+        res = requests.get(url, headers=headers, timeout=20)
+        res.encoding = "utf-8"
+        soup = BeautifulSoup(res.text, "html.parser")
         stocks = {}
-        for _, row in df.iterrows():
-            raw_code = str(row["代码"]).strip()
-            name = str(row["名称"]).strip()
-            if raw_code.isdigit():
-                # 轉換為 Yahoo Finance 格式（例如 00700 -> 0700.HK）
-                symbol = f"{str(int(raw_code)).zfill(4)}.HK"
+
+        for tr in soup.select("#mutualmarket-result tbody tr"):
+            code_el = tr.select_one("td.col-stock-code .mobile-list-body") or tr.select_one("td.col-stock-code")
+            name_el = tr.select_one("td.col-stock-name .mobile-list-body") or tr.select_one("td.col-stock-name")
+            if not code_el or not name_el:
+                continue
+
+            code_match = re.search(r"\d+", code_el.get_text(strip=True))
+            name = name_el.get_text(strip=True).replace("股份名稱:", "").strip()
+            if code_match:
+                code_num = int(code_match.group())
+                # 排除 8 開頭的雙櫃台人民幣股份，只保留港幣主板港股通
+                if code_num >= 80000:
+                    continue
+                symbol = f"{str(code_num).zfill(4)}.HK"
                 stocks[symbol] = name
-        if stocks:
-            print(f"成功抓取 {len(stocks)} 隻港股通股份")
+
+        if len(stocks) > 50:
+            print(f"成功從港交所抓取 {len(stocks)} 隻港股通股份")
             return stocks
     except Exception as e:
-        print(f"自動抓取港股通名單失敗，改用預設清單: {e}")
+        print(f"抓取港交所名單失敗: {e}")
 
-    # 備用預設清單（萬一外部接口暫時無法連線）
+    # 備用清單
     return {
         "0700.HK": "騰訊控股", "9988.HK": "阿里巴巴-W", "3690.HK": "美團-W",
         "1810.HK": "小米集團-W", "0941.HK": "中國移動", "0883.HK": "中國海洋石油",
         "1211.HK": "比亞迪股份", "0388.HK": "香港交易所", "0981.HK": "中芯國際",
-        "0005.HK": "匯豐控股", "9660.HK": "地平線機器人-W", "0020.HK": "商湯-W",
-        "9880.HK": "優必選", "9698.HK": "萬國數據-SW", "0522.HK": "ASMPT"
+        "0005.HK": "匯豐控股", "2628.HK": "中國人壽", "9660.HK": "地平線機器人-W",
+        "0020.HK": "商湯-W", "9880.HK": "優必選", "9698.HK": "萬國數據-SW"
     }
 
 def fetch_all():
@@ -101,9 +119,9 @@ def fetch_all():
             except Exception:
                 continue
 
-        time.sleep(1)  # 批次之間稍微停頓
+        time.sleep(1)
 
-    # 排序：將「黃金交叉 (買)」和「死亡交叉 (賣)」排在最前面，其餘按漲跌幅由高至低排列
+    # 排序：將「黃金交叉 (買)」和「死亡交叉 (賣)」排在最前面
     results.sort(key=lambda x: (x["priority"], -x["change_pct"]))
 
     hkt = timezone(timedelta(hours=8))
