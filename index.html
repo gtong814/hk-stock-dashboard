@@ -71,16 +71,16 @@
       }
 
       tbody.innerHTML = filtered.map(s => {
-        const pctColor = s.change_pct > 0 ? "text-red-400" : s.change_pct < 0 ? "text-emerald-400" : "text-slate-300";
+       const pctColor = s.change_pct > 0 ? "text-emerald-400" : s.change_pct < 0 ? "text-red-400" : "text-slate-300";
         const pctSign = s.change_pct > 0 ? "+" : "";
-        const diffColor = s.diff >= 0 ? "text-red-400" : "text-emerald-400";
+        const diffColor = s.diff >= 0 ? "text-emerald-400" : "text-red-400";
         const badgeStyle = s.signal.includes("買")
-          ? "bg-red-500/20 text-red-300 border border-red-500/50 font-bold"
-          : s.signal.includes("賣")
           ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/50 font-bold"
+          : s.signal.includes("賣")
+          ? "bg-red-500/20 text-red-300 border border-red-500/50 font-bold"
           : s.diff >= 0
-          ? "bg-red-900/30 text-red-300"
-          : "bg-emerald-900/30 text-emerald-300";
+          ? "bg-emerald-900/30 text-emerald-300"
+          : "bg-red-900/30 text-red-300";
 
         return `
           <tr class="hover:bg-slate-700/40 transition">
